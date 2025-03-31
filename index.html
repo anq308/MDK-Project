@@ -34,6 +34,13 @@
             line-height: 1.6;
             background-color: #f5f5f5;
             color: #333;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-theme {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
         }
 
         .container {
@@ -50,6 +57,7 @@
             color: white;
             text-align: center;
             padding-top: 150px;
+            animation: fadeIn 2s ease-in;
         }
 
         .header-buttons {
@@ -59,27 +67,80 @@
             margin-top: 20px;
         }
 
-        nav {
-            background-color: #2c3e50;
-            padding: 1.5rem;
-            position: sticky;
+        .sidebar {
+            position: fixed;
+            left: -250px;
             top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #2c3e50;
+            padding-top: 60px;
+            transition: left 0.3s ease;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: center;
-            gap: 25px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
         }
 
-        nav a {
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
             color: white;
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
+            position: relative;
         }
 
-        nav a:hover {
-            color: #1abc9c;
+        .sidebar a:hover {
+            background-color: #1abc9c;
+            padding-left: 30px;
+        }
+
+        .sidebar a span {
+            margin-left: 15px;
+        }
+
+        .sidebar a::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            right: -120px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #1abc9c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .sidebar a:hover::after {
+            opacity: 1;
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            transform: rotate(90deg);
         }
 
         .section {
@@ -88,11 +149,23 @@
             margin: 2rem 0;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideIn 1s ease forwards;
+        }
+
+        body.dark-theme .section {
+            background-color: #2c2c2c;
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
             font-size: 3.5rem;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         h2 {
@@ -100,30 +173,51 @@
             margin-bottom: 1.5rem;
             border-bottom: 3px solid #1abc9c;
             display: inline-block;
+            animation: typewriter 2s steps(20) forwards;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
-        .destinations-grid, .stories-grid, .gallery-grid, .promo-grid {
+        body.dark-theme h2 {
+            color: #e0e0e0;
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .destinations-grid, .stories-grid, .gallery-grid, .promo-grid, .tours-grid, .trending-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin: 2rem 0;
         }
 
-        .destination-card, .story-card, .promo-card {
+        .destination-card, .story-card, .promo-card, .tour-card, .trending-card {
             background-color: #fff;
             border-radius: 10px;
             overflow: hidden;
-            transition: transform 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            perspective: 1000px;
         }
 
-        .destination-card:hover, .story-card:hover, .promo-card:hover {
-            transform: translateY(-10px);
+        body.dark-theme .destination-card,
+        body.dark-theme .story-card,
+        body.dark-theme .promo-card,
+        body.dark-theme .tour-card,
+        body.dark-theme .trending-card {
+            background-color: #2c2c2c;
         }
 
-        .destination-card img, .story-card img, .promo-card img {
+        .destination-card:hover, .story-card:hover, .promo-card:hover, .tour-card:hover, .trending-card:hover {
+            transform: rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .destination-card img, .story-card img, .promo-card img, .tour-card img, .trending-card img {
             width: 100%;
-            height: 250px;
+            height: 200px;
             object-fit: cover;
         }
 
@@ -135,6 +229,7 @@
             display: flex;
             justify-content: space-between;
             margin-top: 15px;
+            gap: 10px;
         }
 
         .button {
@@ -144,7 +239,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 600;
             text-align: center;
             text-decoration: none;
@@ -153,6 +248,7 @@
 
         .button:hover {
             background-color: #16a085;
+            transform: scale(1.1);
         }
 
         .button-group {
@@ -175,6 +271,21 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+        body.dark-theme .form-container input,
+        body.dark-theme .form-container select,
+        body.dark-theme .form-container textarea {
+            background-color: #333;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        .form-container input:focus, .form-container select:focus, .form-container textarea:focus {
+            border-color: #1abc9c;
+            outline: none;
         }
 
         .gallery-item {
@@ -183,17 +294,17 @@
             border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
         }
 
         .review-list {
@@ -209,6 +320,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-theme .review-item {
+            background-color: #333;
+        }
+
+        .review-item:hover {
+            background-color: #e6f7fa;
+        }
+
+        body.dark-theme .review-item:hover {
+            background-color: #444;
         }
 
         .review-buttons {
@@ -227,6 +351,15 @@
             background-color: #f9f9f9;
             padding: 20px;
             border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        body.dark-theme .tip-card {
+            background-color: #333;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
         }
 
         .map-container {
@@ -245,13 +378,44 @@
             object-fit: cover;
         }
 
-        .promo-card {
+        .promo-card, .tour-card {
             background-color: #e6f7fa;
             text-align: center;
         }
 
-        .promo-card h3 {
+        body.dark-theme .promo-card,
+        body.dark-theme .tour-card {
+            background-color: #2e4a5e;
+        }
+
+        .promo-card h3, .tour-card h3 {
             color: #1abc9c;
+        }
+
+        .countdown {
+            font-size: 1.2rem;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        .quiz-container {
+            background-color: #f0f9ff;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        body.dark-theme .quiz-container {
+            background-color: #2e4a5e;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
         }
 
         .newsletter {
@@ -260,6 +424,7 @@
             padding: 2rem;
             text-align: center;
             border-radius: 15px;
+            animation: fadeIn 1.5s ease;
         }
 
         .newsletter input[type="email"] {
@@ -286,40 +451,184 @@
             color: #1abc9c;
             text-decoration: none;
             font-size: 1.2rem;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .social-links a:hover {
             color: #fff;
+            transform: rotate(360deg);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #e6f7fa 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: modalPop 0.5s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        body.dark-theme .modal-content {
+            background: linear-gradient(135deg, #2c2c2c 0%, #2e4a5e 100%);
+            color: #e0e0e0;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        body.dark-theme .close {
+            color: #e0e0e0;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .scroll-to-top:hover {
+            background-color: #16a085;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 5px;
+            background-color: #1abc9c;
+            z-index: 100;
+            transition: width 0.3s ease;
+        }
+
+        .theme-toggle {
+            background-color: #1abc9c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: #16a085;
+        }
+
+        .weather-icon {
+            font-size: 2rem;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .sidebar-toggle {
+                top: 10px;
+                left: 10px;
+            }
+
+            .newsletter input[type="email"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .header-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
+    <div class="progress-bar" id="progressBar"></div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">✈️</button>
+    <div class="sidebar" id="sidebar">
+        <a href="#destinations" data-ym-goal="nav_destinations" data-tooltip="Explore places"><span>🌍</span><span>Destinations</span></a>
+        <a href="#planner" data-ym-goal="nav_planner" data-tooltip="Plan your trip"><span>📅</span><span>Planner</span></a>
+        <a href="#stories" data-ym-goal="nav_stories" data-tooltip="Read adventures"><span>📖</span><span>Stories</span></a>
+        <a href="#gallery" data-ym-goal="nav_gallery" data-tooltip="View photos"><span>📸</span><span>Gallery</span></a>
+        <a href="#map" data-ym-goal="nav_map" data-tooltip="Interactive map"><span>🗺️</span><span>Map</span></a>
+        <a href="#weather" data-ym-goal="nav_weather" data-tooltip="Check forecast"><span>⛅</span><span>Weather</span></a>
+        <a href="#budget" data-ym-goal="nav_budget" data-tooltip="Calculate costs"><span>💰</span><span>Budget</span></a>
+        <a href="#tips" data-ym-goal="nav_tips" data-tooltip="Travel advice"><span>💡</span><span>Tips</span></a>
+        <a href="#tours" data-ym-goal="nav_tours" data-tooltip="Book tours"><span>✈️</span><span>Tours</span></a>
+        <a href="#promo" data-ym-goal="nav_promo" data-tooltip="Special deals"><span>🎁</span><span>Promo</span></a>
+        <a href="#trending" data-ym-goal="nav_trending" data-tooltip="Hot now"><span>🔥</span><span>Trending</span></a>
+        <a href="#quiz" data-ym-goal="nav_quiz" data-tooltip="Find your match"><span>❓</span><span>Quiz</span></a>
+        <a href="#reviews" data-ym-goal="nav_reviews" data-tooltip="Traveler feedback"><span>⭐</span><span>Reviews</span></a>
+        <a href="#contact" data-ym-goal="nav_contact" data-tooltip="Get in touch"><span>📞</span><span>Contact</span></a>
+    </div>
+
     <header>
         <div>
             <h1>Travel Adventures Hub</h1>
-            <p>Unlock Exclusive Deals and Explore the World</p>
+            <p>Unlock Exclusive Deals and Start Your Journey Today!</p>
             <div class="header-buttons">
-                <a href="#destinations" class="button" data-ym-goal="explore_destinations">Explore Destinations</a>
+                <a href="#tours" class="button" data-ym-goal="explore_tours">Top Tours</a>
                 <a href="#promo" class="button" data-ym-goal="view_promo">Special Offers</a>
                 <a href="https://www.booking.com" target="_blank" class="button" data-ym-goal="book_now">Book Now</a>
             </div>
         </div>
     </header>
-
-    <nav>
-        <a href="#destinations" data-ym-goal="nav_destinations">Destinations</a>
-        <a href="#planner" data-ym-goal="nav_planner">Planner</a>
-        <a href="#stories" data-ym-goal="nav_stories">Stories</a>
-        <a href="#gallery" data-ym-goal="nav_gallery">Gallery</a>
-        <a href="#map" data-ym-goal="nav_map">Map</a>
-        <a href="#weather" data-ym-goal="nav_weather">Weather</a>
-        <a href="#budget" data-ym-goal="nav_budget">Budget</a>
-        <a href="#tips" data-ym-goal="nav_tips">Tips</a>
-        <a href="#promo" data-ym-goal="nav_promo">Promo</a>
-        <a href="#reviews" data-ym-goal="nav_reviews">Reviews</a>
-        <a href="#contact" data-ym-goal="nav_contact">Contact</a>
-    </nav>
 
     <div class="container">
         <section id="destinations" class="section">
@@ -329,10 +638,10 @@
                     <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a" alt="Paris">
                     <div class="card-content">
                         <h3>Paris, France</h3>
-                        <p>Discover romance and art in the City of Lights</p>
+                        <p>Discover the charm of Paris with its iconic Eiffel Tower, world-class museums like the Louvre, and delightful French cuisine. Perfect for romance, art lovers, and foodies alike.</p>
                         <div class="card-buttons">
-                            <a href="https://www.paris.fr" target="_blank" class="button" data-ym-goal="learn_paris">Learn More</a>
-                            <a href="https://www.booking.com/city/fr/paris.html" target="_blank" class="button" data-ym-goal="book_paris">Book Trip</a>
+                            <button class="button" onclick="openDetailsModal('Paris')" data-ym-goal="details_paris">Details</button>
+                            <button class="button" onclick="openBookingModal('Paris')" data-ym-goal="book_paris">Book Trip</button>
                         </div>
                     </div>
                 </div>
@@ -340,10 +649,10 @@
                     <img src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad" alt="Tokyo">
                     <div class="card-content">
                         <h3>Tokyo, Japan</h3>
-                        <p>Experience futuristic vibes and ancient traditions</p>
+                        <p>Immerse yourself in Tokyo's blend of futuristic technology and ancient traditions. Visit Shibuya Crossing, serene temples, and enjoy sushi straight from the source.</p>
                         <div class="card-buttons">
-                            <a href="https://www.gotokyo.org" target="_blank" class="button" data-ym-goal="learn_tokyo">Learn More</a>
-                            <a href="https://www.booking.com/city/jp/tokyo.html" target="_blank" class="button" data-ym-goal="book_tokyo">Book Trip</a>
+                            <button class="button" onclick="openDetailsModal('Tokyo')" data-ym-goal="details_tokyo">Details</button>
+                            <button class="button" onclick="openBookingModal('Tokyo')" data-ym-goal="book_tokyo">Book Trip</button>
                         </div>
                     </div>
                 </div>
@@ -387,10 +696,10 @@
                     <img src="https://images.unsplash.com/photo-1503220317375-aaad61436b1b" alt="Hiking">
                     <div class="card-content">
                         <h3>Hiking the Alps</h3>
-                        <p>A breathtaking journey through snowy peaks</p>
+                        <p>Join adventurer Sarah as she treks through the majestic Alps, encountering stunning vistas, quaint villages, and the thrill of high-altitude trails.</p>
                         <div class="card-buttons">
+                            <button class="button" onclick="openDetailsModal('Hiking the Alps')" data-ym-goal="details_alps">Details</button>
                             <a href="https://www.alpenwild.com" target="_blank" class="button" data-ym-goal="story_alps">Read More</a>
-                            <a href="https://www.lonelyplanet.com/articles/hiking-the-alps" target="_blank" class="button" data-ym-goal="guide_alps">Travel Guide</a>
                         </div>
                     </div>
                 </div>
@@ -459,16 +768,48 @@
             <div class="tips-grid" id="tipsGrid">
                 <div class="tip-card">
                     <h3>Packing Light</h3>
-                    <p>Pack versatile clothing to save space.</p>
+                    <p>Pack versatile clothing to save space and avoid extra baggage fees.</p>
                 </div>
                 <div class="tip-card">
                     <h3>Local Cuisine</h3>
-                    <p>Try street food for authentic flavors.</p>
+                    <p>Try street food for authentic flavors and budget-friendly meals.</p>
                 </div>
             </div>
             <div class="button-group">
                 <button class="button" onclick="addTip()" data-ym-goal="add_tip">Add Tip</button>
                 <a href="https://www.ricksteves.com/travel-tips" target="_blank" class="button" data-ym-goal="more_tips">More Tips</a>
+            </div>
+        </section>
+
+        <section id="tours" class="section">
+            <h2>Popular Tours</h2>
+            <div class="tours-grid" id="toursGrid">
+                <div class="tour-card">
+                    <img src="https://images.unsplash.com/photo-1518247471928-8493a02e9e4b" alt="Italy Tour">
+                    <div class="card-content">
+                        <h3>Italy Grand Tour</h3>
+                        <p>Embark on a 10-day journey through Italy’s iconic cities: Rome’s ancient ruins, Venice’s canals, and Florence’s Renaissance art.</p>
+                        <div class="card-buttons">
+                            <button class="button" onclick="openDetailsModal('Italy Grand Tour')" data-ym-goal="details_italy">Details</button>
+                            <button class="button" onclick="openTourModal('Italy Grand Tour')" data-ym-goal="tour_italy">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tour-card">
+                    <img src="https://images.unsplash.com/photo-1534430480872-3498386e1076" alt="Peru Tour">
+                    <div class="card-content">
+                        <h3>Peru Explorer</h3>
+                        <p>A 7-day adventure to Peru, including the mystical Machu Picchu, vibrant Cusco, and the Sacred Valley’s wonders.</p>
+                        <div class="card-buttons">
+                            <button class="button" onclick="openDetailsModal('Peru Explorer')" data-ym-goal="details_peru">Details</button>
+                            <button class="button" onclick="openTourModal('Peru Explorer')" data-ym-goal="tour_peru">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="button" onclick="addTour()" data-ym-goal="add_tour">Add Tour</button>
+                <a href="https://www.viator.com" target="_blank" class="button" data-ym-goal="more_tours">More Tours</a>
             </div>
         </section>
 
@@ -479,9 +820,11 @@
                     <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" alt="Paris Deal">
                     <div class="card-content">
                         <h3>Paris Getaway</h3>
-                        <p>20% off flights + hotel! Limited time offer.</p>
+                        <p>Enjoy a romantic escape with 20% off flights and hotel stays in Paris. Limited time offer!</p>
+                        <div class="countdown" id="parisCountdown"></div>
                         <div class="card-buttons">
-                            <a href="https://www.expedia.com/paris-deals" target="_blank" class="button" data-ym-goal="promo_paris">Book Now</a>
+                            <button class="button" onclick="openDetailsModal('Paris Getaway')" data-ym-goal="details_paris_promo">Details</button>
+                            <button class="button" onclick="openPromoModal('Paris Getaway')" data-ym-goal="promo_paris">Book Now</button>
                         </div>
                     </div>
                 </div>
@@ -489,9 +832,11 @@
                     <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf" alt="Tokyo Deal">
                     <div class="card-content">
                         <h3>Tokyo Adventure</h3>
-                        <p>Free city tour with 7-day stay!</p>
+                        <p>Book a 7-day stay in Tokyo and get a free guided city tour to explore its vibrant culture.</p>
+                        <div class="countdown" id="tokyoCountdown"></div>
                         <div class="card-buttons">
-                            <a href="https://www.booking.com/tokyo-deals" target="_blank" class="button" data-ym-goal="promo_tokyo">Book Now</a>
+                            <button class="button" onclick="openDetailsModal('Tokyo Adventure')" data-ym-goal="details_tokyo_promo">Details</button>
+                            <button class="button" onclick="openPromoModal('Tokyo Adventure')" data-ym-goal="promo_tokyo">Book Now</button>
                         </div>
                     </div>
                 </div>
@@ -502,11 +847,52 @@
             </div>
         </section>
 
+        <section id="trending" class="section">
+            <h2>Trending Now</h2>
+            <div class="trending-grid" id="trendingGrid">
+                <div class="trending-card">
+                    <img src="https://images.unsplash.com/photo-1519451241324-20ff44e2ce40" alt="Iceland">
+                    <div class="card-content">
+                        <h3>Iceland Wonders</h3>
+                        <p>Chase the Northern Lights and explore volcanic landscapes in Iceland, a top trending destination this season.</p>
+                        <div class="card-buttons">
+                            <button class="button" onclick="openDetailsModal('Iceland Wonders')" data-ym-goal="details_iceland">Details</button>
+                            <button class="button" onclick="openBookingModal('Iceland')" data-ym-goal="book_iceland">Book Trip</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="trending-card">
+                    <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405dd" alt="Santorini">
+                    <div class="card-content">
+                        <h3>Santorini, Greece</h3>
+                        <p>Relax in the stunning whitewashed villages and blue-domed churches of Santorini, a hot spot for 2025.</p>
+                        <div class="card-buttons">
+                            <button class="button" onclick="openDetailsModal('Santorini, Greece')" data-ym-goal="details_santorini">Details</button>
+                            <button class="button" onclick="openBookingModal('Santorini')" data-ym-goal="book_santorini">Book Trip</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="section">
+            <h2>Travel Quiz</h2>
+            <div class="quiz-container">
+                <p>Which destination suits you best?</p>
+                <div class="quiz-options">
+                    <button class="button" onclick="quizAnswer('Beach')" data-ym-goal="quiz_beach">Beach Lover</button>
+                    <button class="button" onclick="quizAnswer('City')" data-ym-goal="quiz_city">City Explorer</button>
+                    <button class="button" onclick="quizAnswer('Nature')" data-ym-goal="quiz_nature">Nature Enthusiast</button>
+                </div>
+                <div id="quizResult"></div>
+            </div>
+        </section>
+
         <section id="reviews" class="section">
             <h2>Traveler Reviews</h2>
             <ul class="review-list" id="reviewList">
                 <li class="review-item">
-                    <span>Amazing experience in Paris! - John D.</span>
+                    <span>Paris was magical! The Eiffel Tower at night is unforgettable. - John D.</span>
                     <div class="review-buttons">
                         <button class="button" onclick="likeReview(this)" data-ym-goal="like_review">Like</button>
                         <button class="button" onclick="deleteReview(this)" data-ym-goal="delete_review">Delete</button>
@@ -531,7 +917,7 @@
                 <textarea id="message" rows="5" placeholder="Your Message"></textarea>
                 <div class="button-group">
                     <button class="button" onclick="submitContact()" data-ym-goal="contact_submit">Send Message</button>
-                    <a href="https://www Lonelyplanet.com/contact" target="_blank" class="button" data-ym-goal="contact_lp">Contact Lonely Planet</a>
+                    <a href="https://www.lonelyplanet.com/contact" target="_blank" class="button" data-ym-goal="contact_lp">Contact Lonely Planet</a>
                 </div>
             </div>
         </section>
@@ -555,18 +941,66 @@
             <a href="https://facebook.com" target="_blank" data-ym-goal="social_facebook">Facebook</a>
             <a href="https://youtube.com" target="_blank" data-ym-goal="social_youtube">YouTube</a>
             <a href="https://pinterest.com" target="_blank" data-ym-goal="social_pinterest">Pinterest</a>
+            <a href="https://www.tiktok.com" target="_blank" data-ym-goal="social_tiktok">TikTok</a>
         </div>
+        <button class="theme-toggle" onclick="toggleTheme()" data-ym-goal="toggle_theme">Toggle Dark Mode</button>
     </footer>
+
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">⬆</button>
+
+    <!-- Modals -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bookingModal')">×</span>
+            <h3>Book Your Trip</h3>
+            <p id="bookingDestination"></p>
+            <a id="bookingLink" href="#" target="_blank" class="button" data-ym-goal="confirm_booking">Confirm Booking</a>
+        </div>
+    </div>
+
+    <div id="tourModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('tourModal')">×</span>
+            <h3>Book Your Tour</h3>
+            <p id="tourName"></p>
+            <a id="tourLink" href="#" target="_blank" class="button" data-ym-goal="confirm_tour">Confirm Booking</a>
+        </div>
+    </div>
+
+    <div id="promoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('promoModal')">×</span>
+            <h3>Special Offer</h3>
+            <p id="promoName"></p>
+            <a id="promoLink" href="#" target="_blank" class="button" data-ym-goal="confirm_promo">Claim Offer</a>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('detailsModal')">×</span>
+            <div id="detailsContent"></div>
+        </div>
+    </div>
+
+    <div id="quizModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('quizModal')">×</span>
+            <h3>Your Travel Match</h3>
+            <p id="quizResultText"></p>
+            <button class="button" onclick="closeModal('quizModal')" data-ym-goal="close_quiz">Close</button>
+        </div>
+    </div>
 
     <script>
         const sampleDestinations = [
-            {name: "New York, USA", desc: "The Big Apple", img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62f167", link: "https://www.nycgo.com", book: "https://www.booking.com/city/us/new-york.html"},
-            {name: "Bali, Indonesia", desc: "Island Paradise", img: "https://images.unsplash.com/photo-1539367628448-4b5419c6acad", link: "https://www.balitourismboard.org", book: "https://www.booking.com/city/id/bali.html"},
-            {name: "Cape Town, SA", desc: "Stunning Views", img: "https://images.unsplash.com/photo-1588257058488-2096d00f7048", link: "https://www.capetown.travel", book: "https://www.booking.com/city/za/cape-town.html"}
+            {name: "New York, USA", desc: "The Big Apple awaits with skyscrapers, Broadway shows, and Central Park.", img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62f167", link: "https://www.nycgo.com", book: "https://www.booking.com/city/us/new-york.html", details: "Experience the hustle of Times Square, the serenity of Central Park, and the cultural melting pot of NYC."},
+            {name: "Bali, Indonesia", desc: "Island paradise with beaches, temples, and rice fields.", img: "https://images.unsplash.com/photo-1539367628448-4b5419c6acad", link: "https://www.balitourismboard.org", book: "https://www.booking.com/city/id/bali.html", details: "Relax on pristine beaches, explore Ubud’s art scene, and visit ancient temples like Tanah Lot."},
+            {name: "Cape Town, SA", desc: "Stunning views from Table Mountain and vibrant culture.", img: "https://images.unsplash.com/photo-1588257058488-2096d00f7048", link: "https://www.capetown.travel", book: "https://www.booking.com/city/za/cape-town.html", details: "Hike Table Mountain, visit Robben Island, and enjoy the Cape Winelands."}
         ];
         const sampleStories = [
-            {title: "Sahara Expedition", desc: "Crossing the desert dunes", img: "https://images.unsplash.com/photo-1519659528534-7fd733a832a0", link: "https://www.sahara-desert.com", guide: "https://www.lonelyplanet.com/articles/sahara-travel"},
-            {title: "Amazon Rainforest", desc: "Wildlife adventure", img: "https://images.unsplash.com/photo-1545156521-77fc10a2efe0", link: "https://www.amazon.com", guide: "https://www.nationalgeographic.com/travel/destination/amazon"}
+            {title: "Sahara Expedition", desc: "Crossing the desert dunes on a camel caravan.", img: "https://images.unsplash.com/photo-1519659528534-7fd733a832a0", link: "https://www.sahara-desert.com", guide: "https://www.lonelyplanet.com/articles/sahara-travel", details: "A thrilling journey through endless sands, sleeping under the stars, and meeting nomadic tribes."},
+            {title: "Amazon Rainforest", desc: "Wildlife adventure in the world’s largest jungle.", img: "https://images.unsplash.com/photo-1545156521-77fc10a2efe0", link: "https://www.amazon.com", guide: "https://www.nationalgeographic.com/travel/destination/amazon", details: "Spot jaguars, paddle through rivers, and learn from indigenous guides in the Amazon."}
         ];
         const sampleImages = [
             "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
@@ -574,13 +1008,35 @@
             "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
         ];
         const sampleTips = [
-            "Book flights early to save money.",
-            "Always carry a reusable water bottle."
+            "Book flights early to save money and secure the best seats.",
+            "Always carry a reusable water bottle to stay hydrated and eco-friendly."
         ];
         const samplePromos = [
-            {title: "London Escape", desc: "15% off 5-night stays!", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac514", link: "https://www.booking.com/city/gb/london.html"},
-            {title: "Safari Special", desc: "Free guide with booking!", img: "https://images.unsplash.com/photo-1516426122078-c23e707b9d20", link: "https://www.safaribookings.com"}
+            {title: "London Escape", desc: "15% off 5-night stays with breakfast included!", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac514", link: "https://www.booking.com/city/gb/london.html", details: "Stay in central London, explore Buckingham Palace, and enjoy a free afternoon tea."},
+            {title: "Safari Special", desc: "Free guide with a 3-day safari booking!", img: "https://images.unsplash.com/photo-1516426122078-c23e707b9d20", link: "https://www.safaribookings.com", details: "Witness the Big Five in Tanzania, with expert guides and luxury tented camps."}
         ];
+        const sampleTours = [
+            {title: "Egypt Pyramids", desc: "5 days exploring ancient wonders.", img: "https://images.unsplash.com/photo-1553913861-c0fddf2619ee", book: "https://www.gadventures.com/trips/egypt-pyramids/9876/", details: "https://www.tourradar.com/t/egypt", detailsText: "Visit the Pyramids of Giza, sail the Nile, and uncover the secrets of the Pharaohs."},
+            {title: "New Zealand Trek", desc: "12 days of scenic hikes and fjords.", img: "https://images.unsplash.com/photo-1507697364665-69eec21a5295", book: "https://www.intrepidtravel.com/new-zealand-trek/5432/", details: "https://www.tourradar.com/t/new-zealand", detailsText: "Hike Tongariro, cruise Milford Sound, and explore New Zealand’s natural beauty."}
+        ];
+
+        const detailsData = {
+            "Paris": {img: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a", text: "Paris, the City of Lights, offers a blend of history, culture, and romance. Stroll along the Champs-Élysées, marvel at the Mona Lisa, and sip coffee at quaint cafés.", link: "https://www.booking.com/city/fr/paris.html"},
+            "Tokyo": {img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad", text: "Tokyo is a vibrant metropolis where tradition meets innovation. Explore bustling districts like Shinjuku, ancient shrines, and futuristic tech hubs.", link: "https://www.booking.com/city/jp/tokyo.html"},
+            "Hiking the Alps": {img: "https://images.unsplash.com/photo-1503220317375-aaad61436b1b", text: "Hiking the Alps is an unforgettable experience, with snow-capped peaks, alpine meadows, and charming villages. Perfect for nature lovers and thrill-seekers.", link: "https://www.alpenwild.com"},
+            "Italy Grand Tour": {img: "https://images.unsplash.com/photo-1518247471928-8493a02e9e4b", text: "This 10-day tour takes you through Italy’s treasures: Rome’s Colosseum, Venice’s Grand Canal, and Florence’s Uffizi Gallery. A feast for the senses!", link: "https://www.tourradar.com/t/italy"},
+            "Peru Explorer": {img: "https://images.unsplash.com/photo-1534430480872-3498386e1076", text: "Discover Peru’s rich history with a 7-day tour featuring Machu Picchu, the Inca Trail, and the colorful markets of Cusco.", link: "https://www.tourradar.com/t/peru"},
+            "Paris Getaway": {img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34", text: "A romantic 20% off deal for Paris! Includes flights, hotel, and a Seine River cruise. Book now before it’s gone!", link: "https://www.booking.com/city/fr/paris.html"},
+            "Tokyo Adventure": {img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf", text: "Stay 7 days in Tokyo and enjoy a free city tour, including sushi-making lessons and a visit to Mount Fuji.", link: "https://www.booking.com/city/jp/tokyo.html"},
+            "Iceland Wonders": {img: "https://images.unsplash.com/photo-1519451241324-20ff44e2ce40", text: "Chase the Northern Lights, bathe in the Blue Lagoon, and explore Iceland’s rugged terrain. A trending adventure for 2025!", link: "https://www.booking.com/city/is/reykjavik.html"},
+            "Santorini, Greece": {img: "https://images.unsplash.com/photo-1526772662000-3f88f10405dd", text: "Santorini’s iconic sunsets, whitewashed buildings, and crystal-clear waters make it a must-visit. Relax and unwind in style.", link: "https://www.booking.com/city/gr/santorini.html"}
+        };
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            ym(100686392, 'reachGoal', 'sidebar_toggled');
+        }
 
         function addDestination() {
             const randomDest = sampleDestinations[Math.floor(Math.random() * sampleDestinations.length)];
@@ -592,13 +1048,55 @@
                     <h3>${randomDest.name}</h3>
                     <p>${randomDest.desc}</p>
                     <div class="card-buttons">
-                        <a href="${randomDest.link}" target="_blank" class="button" data-ym-goal="learn_${randomDest.name.split(',')[0].toLowerCase()}">Learn More</a>
-                        <a href="${randomDest.book}" target="_blank" class="button" data-ym-goal="book_${randomDest.name.split(',')[0].toLowerCase()}">Book Trip</a>
+                        <button class="button" onclick="openDetailsModal('${randomDest.name}')" data-ym-goal="details_${randomDest.name.split(',')[0].toLowerCase()}">Details</button>
+                        <button class="button" onclick="openBookingModal('${randomDest.name}')" data-ym-goal="book_${randomDest.name.split(',')[0].toLowerCase()}">Book Trip</button>
                     </div>
                 </div>
             `;
             document.getElementById('destinationsGrid').appendChild(card);
             ym(100686392, 'reachGoal', 'add_destination_success');
+        }
+
+        function openBookingModal(destination) {
+            const modal = document.getElementById('bookingModal');
+            document.getElementById('bookingDestination').textContent = `Ready to book your trip to ${destination}?`;
+            document.getElementById('bookingLink').href = sampleDestinations.find(d => d.name === destination)?.book || "https://www.booking.com";
+            modal.style.display = 'flex';
+            ym(100686392, 'reachGoal', 'booking_modal_opened');
+        }
+
+        function openTourModal(tourName) {
+            const modal = document.getElementById('tourModal');
+            document.getElementById('tourName').textContent = `Book ${tourName} now!`;
+            document.getElementById('tourLink').href = sampleTours.find(t => t.title === tourName).book;
+            modal.style.display = 'flex';
+            ym(100686392, 'reachGoal', 'tour_modal_opened');
+        }
+
+        function openPromoModal(promoName) {
+            const modal = document.getElementById('promoModal');
+            document.getElementById('promoName').textContent = `Claim your ${promoName} offer!`;
+            document.getElementById('promoLink').href = samplePromos.find(p => p.title === promoName)?.link || "https://www.booking.com";
+            modal.style.display = 'flex';
+            ym(100686392, 'reachGoal', 'promo_modal_opened');
+        }
+
+        function openDetailsModal(item) {
+            const modal = document.getElementById('detailsModal');
+            const data = detailsData[item];
+            document.getElementById('detailsContent').innerHTML = `
+                <img src="${data.img}" alt="${item}">
+                <h3>${item}</h3>
+                <p>${data.text}</p>
+                <a href="${data.link}" target="_blank" class="button" data-ym-goal="book_${item.toLowerCase().split(' ')[0]}">Book Now</a>
+            `;
+            modal.style.display = 'flex';
+            ym(100686392, 'reachGoal', 'details_modal_opened');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            ym(100686392, 'reachGoal', `${modalId}_closed`);
         }
 
         function planTrip() {
@@ -607,8 +1105,7 @@
             const startDate = document.getElementById('startDate').value;
             const travelType = document.getElementById('travelType').value;
             if (destination && duration && startDate && travelType) {
-                const result = `Trip to ${destination} (${travelType}) planned for ${duration} days, starting ${startDate}!`;
-                document.getElementById('tripResult').innerHTML = `<p style="color: #1abc9c">${result}</p>`;
+                document.getElementById('tripResult').innerHTML = `<p style="color: #1abc9c">Trip to ${destination} (${travelType}) planned for ${duration} days, starting ${startDate}!</p>`;
                 ym(100686392, 'reachGoal', 'trip_planned');
             } else {
                 document.getElementById('tripResult').innerHTML = '<p style="color: #e74c3c">Please fill all fields!</p>';
@@ -625,8 +1122,8 @@
                     <h3>${randomStory.title}</h3>
                     <p>${randomStory.desc}</p>
                     <div class="card-buttons">
+                        <button class="button" onclick="openDetailsModal('${randomStory.title}')" data-ym-goal="details_${randomStory.title.toLowerCase().split(' ')[0]}">Details</button>
                         <a href="${randomStory.link}" target="_blank" class="button" data-ym-goal="story_${randomStory.title.toLowerCase().split(' ')[0]}">Read More</a>
-                        <a href="${randomStory.guide}" target="_blank" class="button" data-ym-goal="guide_${randomStory.title.toLowerCase().split(' ')[0]}">Travel Guide</a>
                     </div>
                 </div>
             `;
@@ -660,7 +1157,9 @@
             const city = document.getElementById('weatherCity').value;
             if (city) {
                 const temp = Math.floor(Math.random() * 30) + 10;
-                document.getElementById('weatherResult').innerHTML = `<p style="color: #1abc9c">Weather in ${city}: ${temp}°C, Partly Cloudy</p>`;
+                const conditions = ['☀️ Sunny', '⛅ Partly Cloudy', '🌧️ Rainy'];
+                const condition = conditions[Math.floor(Math.random() * conditions.length)];
+                document.getElementById('weatherResult').innerHTML = `<p style="color: #1abc9c">Weather in ${city}: ${temp}°C, ${condition.split(' ')[1]} <span class="weather-icon">${condition.split(' ')[0]}</span></p>`;
                 ym(100686392, 'reachGoal', 'weather_checked');
             } else {
                 document.getElementById('weatherResult').innerHTML = '<p style="color: #e74c3c">Please enter a city!</p>';
@@ -689,6 +1188,25 @@
             ym(100686392, 'reachGoal', 'tip_added');
         }
 
+        function addTour() {
+            const randomTour = sampleTours[Math.floor(Math.random() * sampleTours.length)];
+            const card = document.createElement('div');
+            card.className = 'tour-card';
+            card.innerHTML = `
+                <img src="${randomTour.img}" alt="${randomTour.title}">
+                <div class="card-content">
+                    <h3>${randomTour.title}</h3>
+                    <p>${randomTour.desc}</p>
+                    <div class="card-buttons">
+                        <button class="button" onclick="openDetailsModal('${randomTour.title}')" data-ym-goal="details_${randomTour.title.toLowerCase().split(' ')[0]}">Details</button>
+                        <button class="button" onclick="openTourModal('${randomTour.title}')" data-ym-goal="tour_${randomTour.title.toLowerCase().split(' ')[0]}">Book Now</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('toursGrid').appendChild(card);
+            ym(100686392, 'reachGoal', 'tour_added');
+        }
+
         function addPromo() {
             const randomPromo = samplePromos[Math.floor(Math.random() * samplePromos.length)];
             const card = document.createElement('div');
@@ -698,13 +1216,46 @@
                 <div class="card-content">
                     <h3>${randomPromo.title}</h3>
                     <p>${randomPromo.desc}</p>
+                    <div class="countdown"></div>
                     <div class="card-buttons">
-                        <a href="${randomPromo.link}" target="_blank" class="button" data-ym-goal="promo_${randomPromo.title.toLowerCase().split(' ')[0]}">Book Now</a>
+                        <button class="button" onclick="openDetailsModal('${randomPromo.title}')" data-ym-goal="details_${randomPromo.title.toLowerCase().split(' ')[0]}">Details</button>
+                        <button class="button" onclick="openPromoModal('${randomPromo.title}')" data-ym-goal="promo_${randomPromo.title.toLowerCase().split(' ')[0]}">Book Now</button>
                     </div>
                 </div>
             `;
             document.getElementById('promoGrid').appendChild(card);
+            startCountdown(card.querySelector('.countdown'), 3 * 24 * 60 * 60);
             ym(100686392, 'reachGoal', 'promo_added');
+        }
+
+        function startCountdown(element, seconds) {
+            let timeLeft = seconds;
+            const interval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    element.textContent = "Offer Expired!";
+                    return;
+                }
+                const days = Math.floor(timeLeft / (24 * 60 * 60));
+                const hours = Math.floor((timeLeft % (24 * 60 * 60)) / (60 * 60));
+                const minutes = Math.floor((timeLeft % (60 * 60)) / 60);
+                const secs = timeLeft % 60;
+                element.textContent = `Ends in: ${days}d ${hours}h ${minutes}m ${secs}s`;
+                timeLeft--;
+            }, 1000);
+        }
+
+        function quizAnswer(choice) {
+            let result;
+            switch (choice) {
+                case 'Beach': result = 'Try Bali or Maldives for sun and sand!'; break;
+                case 'City': result = 'Paris or Tokyo awaits your urban adventure!'; break;
+                case 'Nature': result = 'Explore New Zealand or Peru’s wild landscapes!'; break;
+            }
+            const modal = document.getElementById('quizModal');
+            document.getElementById('quizResultText').textContent = result;
+            modal.style.display = 'flex';
+            ym(100686392, 'reachGoal', 'quiz_completed');
         }
 
         function addReview() {
@@ -764,10 +1315,54 @@
             }
         }
 
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            ym(100686392, 'reachGoal', 'scroll_to_top');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+            ym(100686392, 'reachGoal', 'theme_toggled');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            startCountdown(document.getElementById('parisCountdown'), 2 * 24 * 60 * 60);
+            startCountdown(document.getElementById('tokyoCountdown'), 5 * 24 * 60 * 60);
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
+        });
+
         document.addEventListener('click', function(e) {
             const goal = e.target.getAttribute('data-ym-goal');
             if (goal) {
                 ym(100686392, 'reachGoal', goal);
+            }
+        });
+
+        window.addEventListener('click', function(e) {
+            const modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    ym(100686392, 'reachGoal', `${modal.id}_closed`);
+                }
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = `${scrollPercent}%`;
+
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            if (scrollTop > 300) {
+                scrollToTopBtn.style.display = 'block';
+            } else {
+                scrollToTopBtn.style.display = 'none';
             }
         });
     </script>
